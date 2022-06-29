@@ -12,7 +12,12 @@
     <span id="operation" class="assistive-text">
       Press space bar to reorder
     </span>
-    <ol id="listbox" role="listbox"></ol>
+    <ol id="listbox" role="listbox">
+      <li role="option" aria-describedby="operation" tabindex="0">Ice Cream</li>
+      <li role="option" aria-describedby="operation" tabindex="-1">Pie</li>
+      <li role="option" aria-describedby="operation" tabindex="-1">Cake</li>
+      <li role="option" aria-describedby="operation" tabindex="-1">Cupcake</li>
+    </ol>
     <script src="src/index.js"></script>
   </body>
 </html>

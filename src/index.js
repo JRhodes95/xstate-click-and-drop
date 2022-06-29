@@ -1,137 +1,108 @@
 import "./styles.css";
-import { createMachine, interpret, assign } from "xstate";
+import { createMachine, interpret } from "xstate";
 
 const listboxMachine = createMachine({
   id: "listboxMachine",
   initial: "notFocused",
-  context: {
-    focusIndex: 0,
-    listItems: [
-      { id: "001", name: "Ice Cream" },
-      { id: "002", name: "Pie" },
-      { id: "003", name: "Cake" },
-      { id: "004", name: "Cupcake" }
-    ],
-    selectedItemId: null
-  },
+
   states: {
     focused: {
       initial: "noItemSelected",
+
       states: {
+        hist: {
+          type: "history",
+          history: "shallow"
+        },
         itemSelected: {
           on: {
             Space: {
               target: "noItemSelected",
-              actions: [
-                assign({
-                  selectedItemId: () => null
-                })
-              ]
+              actions: [dropFocusedElement]
+            },
+            ArrowUp: {
+              target: "itemSelected",
+              actions: [moveItemUp]
+            },
+            ArrowDown: {
+              target: "itemSelected",
+              actions: [moveItemDown]
             }
           }
         },
         noItemSelected: {
           on: {
             ArrowUp: {
-              // target: "focused",
-              actions: [
-                assign({
-                  focusIndex: ({ focusIndex }) =>
-                    focusIndex === 0 ? focusIndex : focusIndex - 1
-                })
-              ]
+              actions: [focusPreviousSibling]
             },
             ArrowDown: {
-              // target: "focused",
-              actions: [
-                assign({
-                  focusIndex: ({ focusIndex, listItems }) =>
-                    focusIndex === listItems.length - 1
-                      ? focusIndex
-                      : focusIndex + 1
-                })
-              ]
+              actions: [focusNextSibling]
             },
             Space: {
               target: "itemSelected",
-              actions: [
-                assign({
-                  selectedItemId: ({ focusIndex }) => focusIndex
-                })
-              ]
+              actions: [grabFocusedElement]
             }
           }
         }
       },
       on: {
         FOCUS_OUT: {
-          target: "notFocused"
+          target: "notFocused",
+          actions: []
         }
       }
     },
     notFocused: {
       on: {
         FOCUS_IN: {
-          target: "focused"
+          target: "focused.hist"
         }
       }
     }
   }
 });
 
+function focusNextSibling() {
+  document.activeElement.nextSibling?.focus();
+}
+
+function focusPreviousSibling() {
+  document.activeElement.previousSibling?.focus();
+}
+
+function moveItemUp() {
+  const selectedElement = document.activeElement;
+  selectedElement.previousSibling?.before(selectedElement);
+  selectedElement.focus();
+}
+
+function moveItemDown() {
+  const selectedElement = document.activeElement;
+  selectedElement.nextSibling?.after(selectedElement);
+  selectedElement.focus();
+}
+
+function grabFocusedElement() {
+  document.activeElement.classList.toggle("highlight");
+  document.activeElement.setAttribute("aria-grabbed", true);
+}
+
+function dropFocusedElement() {
+  document.activeElement.setAttribute("aria-grabbed", false);
+  document.activeElement.classList.toggle("highlight");
+}
+
 // Machine instance with internal state
-const listboxService = interpret(listboxMachine)
-  .onTransition((state) => render(state))
-  .start();
+const listboxService = interpret(listboxMachine).start();
 
-function makeListItem({ id, name }, index) {
-  return `<li id="${id}" role="option" aria-describedby="operation" tabindex="${
-    index === 0 ? 0 : -1
-  }">${name}</li>`;
-}
+document.addEventListener("keydown", (event) =>
+  listboxService.send(event.code)
+);
 
-function render(state) {
-  const {
-    context: { focusIndex, listItems, selectedItemId }
-  } = state;
-
-  const focusIndexDiv = document.getElementById("focusIndex");
-  renderIfChanged(focusIndexDiv, `Focus index: ${focusIndex}`);
-
-  const selectedIdDiv = document.getElementById("selectedItemId");
-  renderIfChanged(selectedIdDiv, `Selected item id: ${selectedItemId}`);
-
-  const stateDiv = document.getElementById("state");
-  renderIfChanged(stateDiv, `State: ${JSON.stringify(state.value)}`);
-
-  const listElements = listItems
-    .map((item, index) => makeListItem(item, index))
-    .join("");
-
-  const listboxElement = document.getElementById("listbox");
-  renderIfChanged(listboxElement, listElements);
-
-  if (state.matches("focused")) {
-    document.getElementById(`${listItems[focusIndex].id}`).focus();
-  }
-}
-
-function renderIfChanged(element, content) {
-  const currentContent = element.innerHTML;
-  if (currentContent === content) return;
-  console.log("rerendering");
-  element.innerHTML = content;
-}
-
-function handleKeydown(event) {
-  listboxService.send(event.code);
-}
-
-document.addEventListener("keydown", handleKeydown);
-
-document
-  .getElementById("listbox")
-  .addEventListener("focusin", () => listboxService.send("FOCUS_IN"));
+document.getElementById("listbox").addEventListener("focusin", (event) => {
+  listboxService.send("FOCUS_IN");
+  event.preventDefault();
+});
 
 document
   .getElementById("listbox")
