@@ -19,10 +19,24 @@ li {
   flex-direction: row;
   gap: 0.5rem;
   cursor: grab;
+  border: transparent solid 3px;
+  box-sizing: content-box;
+}
+
+button {
+  padding: 1rem;
+  font-size: 1rem;
+  background: aliceblue;
+  border-radius: 0.25rem;
+  border: none;
 }
 
 .highlight {
   background: lightgreen;
+}
+
+.over {
+  border: blue dashed 2px;
 }
 
 .container {

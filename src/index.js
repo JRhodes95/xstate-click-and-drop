@@ -22,13 +22,13 @@ function moveItemDown() {
 }
 
 function grabFocusedElement() {
-  document.activeElement.classList.toggle("highlight");
+  document.activeElement.classList.add("highlight");
   document.activeElement.setAttribute("aria-grabbed", true);
 }
 
 function dropFocusedElement() {
   document.activeElement.setAttribute("aria-grabbed", false);
-  document.activeElement.classList.toggle("highlight");
+  document.activeElement.classList.remove("highlight");
 }
 
 const listboxMachine = createMachine({
@@ -93,10 +93,66 @@ const listboxMachine = createMachine({
 });
 
 // Machine instance with internal state
-const listboxService = interpret(listboxMachine)
-  .onTransition((state) => console.log(state))
-  .onEvent((event) => console.log(event))
-  .start();
+const listboxService = interpret(listboxMachine).start();
+// .onTransition((state) => console.log(state))
+// .onEvent((event) => console.log(event))
+
+const listItems = document.querySelectorAll(".draggable-item");
+
+listItems.forEach((item) => {
+  item.addEventListener("dragstart", handleDragStart);
+  item.addEventListener("dragenter", handleDragEnter);
+  item.addEventListener("dragover", handleDragOver);
+  item.addEventListener("dragleave", handleDragLeave);
+  item.addEventListener("drop", handleDrop);
+  item.addEventListener("dragend", handleDragEnd);
+});
+
+let dragSrcEl = null;
+
+function handleDragStart(event) {
+  event.target.classList.add("highlight");
+  dragSrcEl = this;
+
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/html", this.innerHTML);
+}
+
+function handleDragEnd(event) {
+  event.target.classList.remove("highlight");
+  listItems.forEach(function (item) {
+    item.classList.remove("over");
+  });
+}
+
+function handleDragEnter(event) {
+  event.target.classList.add("over");
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+
+  e.dataTransfer.dropEffect = "move";
+
+  return false;
+}
+
+function handleDragLeave(event) {
+  event.target.classList.remove("over");
+}
+
+function handleDrop(e) {
+  e.stopPropagation(); // stops the browser from redirecting.
+
+  if (dragSrcEl !== this) {
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = e.dataTransfer.getData("text/html");
+  }
+
+  return false;
+}
 
 document.addEventListener("keydown", (event) => {
   if (
@@ -117,3 +173,12 @@ document.getElementById("listbox").addEventListener("focusin", (event) => {
 document
   .getElementById("listbox")
   .addEventListener("focusout", () => listboxService.send("FOCUS_OUT"));
+
+document.getElementById("save-order").addEventListener("click", (event) => {
+  const listbox = document.getElementById("listbox");
+
+  const listItems = Array.from(listbox.querySelectorAll("#item-value"));
+
+  const itemIDsInOrder = listItems.map((listItem) => listItem.dataset.itemid);
+  console.log(itemIDsInOrder);
+});

@@ -12,42 +12,47 @@
       </div>
       <ol id="listbox" role="listbox">
         <li
+          class="draggable-item"
           role="option"
           aria-describedby="operation"
           draggable="true"
           tabindex="0"
         >
           <div aria-hidden="true">⋮</div>
-          <div>Ice Cream</div>
+          <div id="item-value" data-itemid="001">Ice Cream</div>
         </li>
         <li
+          class="draggable-item"
           role="option"
           aria-describedby="operation"
           draggable="true"
           tabindex="-1"
         >
           <div aria-hidden="true">⋮</div>
-          <div>Pie</div>
+          <div id="item-value" data-itemid="002">Pie</div>
         </li>
         <li
+          class="draggable-item"
           role="option"
           aria-describedby="operation"
           draggable="true"
           tabindex="-1"
         >
           <div aria-hidden="true">⋮</div>
-          <div>Cake</div>
+          <div id="item-value" data-itemid="003">Cake</div>
         </li>
         <li
+          class="draggable-item"
           role="option"
           aria-describedby="operation"
           draggable="true"
           tabindex="-1"
         >
           <div aria-hidden="true">⋮</div>
-          <div>Cupcake</div>
+          <div id="item-value" data-itemid="004">Cupcake</div>
         </li>
       </ol>
+      <button id="save-order">Save chosen order</button>
     </div>
     <script src="src/index.js"></script>
   </body>
