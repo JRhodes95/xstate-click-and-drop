@@ -154,7 +154,19 @@ function handleDrop(e) {
   return false;
 }
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", handleKeydown);
+
+document
+  .getElementById("listbox")
+  .addEventListener("focusin", (event) => listboxService.send("FOCUS_IN"));
+
+document
+  .getElementById("listbox")
+  .addEventListener("focusout", () => listboxService.send("FOCUS_OUT"));
+
+document.getElementById("save-order").addEventListener("click", handleSave);
+
+function handleKeydown(event) {
   if (
     ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
       event.code
@@ -163,22 +175,24 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
   }
   listboxService.send(event.code);
-});
+}
 
-document.getElementById("listbox").addEventListener("focusin", (event) => {
-  listboxService.send("FOCUS_IN");
-  event.preventDefault();
-});
-
-document
-  .getElementById("listbox")
-  .addEventListener("focusout", () => listboxService.send("FOCUS_OUT"));
-
-document.getElementById("save-order").addEventListener("click", (event) => {
+function handleSave() {
   const listbox = document.getElementById("listbox");
-
   const listItems = Array.from(listbox.querySelectorAll("#item-value"));
+  const itemsInOrder = listItems.map((listItem) => ({
+    id: listItem.dataset.itemid,
+    name: listItem.textContent
+  }));
 
-  const itemIDsInOrder = listItems.map((listItem) => listItem.dataset.itemid);
-  console.log(itemIDsInOrder);
-});
+  console.log(itemsInOrder);
+
+  const outputListbox = document.getElementById("output-list");
+
+  const outputMarkup = itemsInOrder.reduce(
+    (prev, { id, name }) => `${prev} <li id=${id}>${name}</li>`,
+    ""
+  );
+
+  outputListbox.innerHTML = outputMarkup;
+}

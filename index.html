@@ -5,55 +5,63 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <div class="container">
-      <span aria-live="assertive" class="assistive-text"></span>
-      <div id="operation" class="assistive-text">
-        Press space bar to grab, then up and down to move the option.
+    <div class="two-column-grid">
+      <div class="container">
+        <h2>Input</h2>
+        <span aria-live="assertive" class="assistive-text"></span>
+        <div id="operation" class="assistive-text">
+          Press space bar to grab, then up and down to move the option.
+        </div>
+        <ol class="draggable-list" id="listbox" role="listbox">
+          <li
+            class="draggable-item"
+            role="option"
+            aria-describedby="operation"
+            draggable="true"
+            tabindex="0"
+          >
+            <div aria-hidden="true">⋮</div>
+            <div id="item-value" data-itemid="001">Ice Cream</div>
+          </li>
+          <li
+            class="draggable-item"
+            role="option"
+            aria-describedby="operation"
+            draggable="true"
+            tabindex="-1"
+          >
+            <div aria-hidden="true">⋮</div>
+            <div id="item-value" data-itemid="002">Pie</div>
+          </li>
+          <li
+            class="draggable-item"
+            role="option"
+            aria-describedby="operation"
+            draggable="true"
+            tabindex="-1"
+          >
+            <div aria-hidden="true">⋮</div>
+            <div id="item-value" data-itemid="003">Cake</div>
+          </li>
+          <li
+            class="draggable-item"
+            role="option"
+            aria-describedby="operation"
+            draggable="true"
+            tabindex="-1"
+          >
+            <div aria-hidden="true">⋮</div>
+            <div id="item-value" data-itemid="004">Cupcake</div>
+          </li>
+        </ol>
+        <button id="save-order">Save chosen order</button>
       </div>
-      <ol id="listbox" role="listbox">
-        <li
-          class="draggable-item"
-          role="option"
-          aria-describedby="operation"
-          draggable="true"
-          tabindex="0"
-        >
-          <div aria-hidden="true">⋮</div>
-          <div id="item-value" data-itemid="001">Ice Cream</div>
-        </li>
-        <li
-          class="draggable-item"
-          role="option"
-          aria-describedby="operation"
-          draggable="true"
-          tabindex="-1"
-        >
-          <div aria-hidden="true">⋮</div>
-          <div id="item-value" data-itemid="002">Pie</div>
-        </li>
-        <li
-          class="draggable-item"
-          role="option"
-          aria-describedby="operation"
-          draggable="true"
-          tabindex="-1"
-        >
-          <div aria-hidden="true">⋮</div>
-          <div id="item-value" data-itemid="003">Cake</div>
-        </li>
-        <li
-          class="draggable-item"
-          role="option"
-          aria-describedby="operation"
-          draggable="true"
-          tabindex="-1"
-        >
-          <div aria-hidden="true">⋮</div>
-          <div id="item-value" data-itemid="004">Cupcake</div>
-        </li>
-      </ol>
-      <button id="save-order">Save chosen order</button>
+      <div class="container">
+        <h2>Output</h2>
+        <ol id="output-list"></ol>
+      </div>
     </div>
+
     <script src="src/index.js"></script>
   </body>
 </html>
