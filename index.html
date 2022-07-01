@@ -5,19 +5,50 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <div id="focusIndex"></div>
-    <div id="selectedItemId"></div>
-    <div id="state"></div>
-    <span aria-live="assertive" class="assistive-text"></span>
-    <span id="operation" class="assistive-text">
-      Press space bar to reorder
-    </span>
-    <ol id="listbox" role="listbox">
-      <li role="option" aria-describedby="operation" tabindex="0">Ice Cream</li>
-      <li role="option" aria-describedby="operation" tabindex="-1">Pie</li>
-      <li role="option" aria-describedby="operation" tabindex="-1">Cake</li>
-      <li role="option" aria-describedby="operation" tabindex="-1">Cupcake</li>
-    </ol>
+    <div class="container">
+      <span aria-live="assertive" class="assistive-text"></span>
+      <div id="operation" class="assistive-text">
+        Press space bar to grab, then up and down to move the option.
+      </div>
+      <ol id="listbox" role="listbox">
+        <li
+          role="option"
+          aria-describedby="operation"
+          draggable="true"
+          tabindex="0"
+        >
+          <div aria-hidden="true">⋮</div>
+          <div>Ice Cream</div>
+        </li>
+        <li
+          role="option"
+          aria-describedby="operation"
+          draggable="true"
+          tabindex="-1"
+        >
+          <div aria-hidden="true">⋮</div>
+          <div>Pie</div>
+        </li>
+        <li
+          role="option"
+          aria-describedby="operation"
+          draggable="true"
+          tabindex="-1"
+        >
+          <div aria-hidden="true">⋮</div>
+          <div>Cake</div>
+        </li>
+        <li
+          role="option"
+          aria-describedby="operation"
+          draggable="true"
+          tabindex="-1"
+        >
+          <div aria-hidden="true">⋮</div>
+          <div>Cupcake</div>
+        </li>
+      </ol>
+    </div>
     <script src="src/index.js"></script>
   </body>
 </html>
